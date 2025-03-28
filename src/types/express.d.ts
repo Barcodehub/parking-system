@@ -1,8 +1,11 @@
-import { Request } from "express";
-import { User } from "../models/user.model"; // Ajusta la ruta según tu estructura
+import { Role } from "@prisma/client";
 
-declare module "express-serve-static-core" {
+declare module 'express-serve-static-core' {
   interface Request {
-    user?: User;
+    user?: {
+      id: number;
+      email: string;
+      role: Role;
+    };
   }
 }
