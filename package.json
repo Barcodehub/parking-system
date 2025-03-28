@@ -1,23 +1,25 @@
 {
-  "name": "parking-system",
+  "name": "prisma-express-ts",
   "version": "1.0.0",
-  "description": "APIREST para el control de vehículos en los parqueaderos de varios socios",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
-    "start": "node dist/server.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev src/server.ts",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "espress": "^0.0.0"
+    "@prisma/client": "^5.0.0",
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.13.14",
-    "nodemon": "^3.1.9",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.5.7",
+    "prisma": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
   }
 }

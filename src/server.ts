@@ -1,13 +1,20 @@
-import express from 'express'
+import app from './app';
+import prisma from './config/database';
+import dotenv from 'dotenv';
 
-const app = express()
+dotenv.config();
 
-app.get('/', (req, res) => {
-    res.send('Hola mundo')
-})
+const PORT = process.env.PORT || 3000;
 
-const port = process.env.PORT || 4000
-
-app.listen(port, ()=> {
-    console.log('servidor funcionando', port)
-})
+// Verificar la conexión a la base de datos al iniciar
+prisma.$connect()
+  .then(() => {
+    console.log('Connected to database');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error: any) => {
+    console.error('Database connection error:', error);
+    process.exit(1);
+  });
