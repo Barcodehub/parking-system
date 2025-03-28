@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET, TOKEN_EXPIRATION } from "../config/env";
 import { createUser, findUserByEmail } from "../repositories/user.repository";
 import bcrypt from "bcryptjs";
-import { User } from "@prisma/client";
+import { Role } from "@prisma/client";
 
 export const login = async (email: string, password: string) => {
   const user = await findUserByEmail(email);
@@ -18,20 +18,14 @@ export const login = async (email: string, password: string) => {
 
 
 
-export const createSocioService = async (
-  name: string,
-  email: string,
-  password: string
-)=> {
-  // Verifica si el email ya está registrado
+export const registerUser = async (name: string, email: string, password: string) => {
   const existingUser = await findUserByEmail(email);
+
   if (existingUser) {
-    throw new Error("El correo electrónico ya está registrado");
+    throw new Error('User already exists!');
   }
 
-  // Hashea la contraseña
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Crea el nuevo usuario con rol SOCIO
-  return await createUser(name, email, hashedPassword);
+  return await createUser(name, email, hashedPassword, Role.SOCIO);
 };

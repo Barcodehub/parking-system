@@ -2,14 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env";
 import { getUserById } from '../repositories/user.repository';
-import { Role } from "@prisma/client";
 
 
-interface JwtPayload {
-  id: number;
-  email: string;
-  role: Role;
-}
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -21,7 +15,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     
-    // Attach the user to the request object using type assertion
+    // un attach al usuario
     (req as any).user = {
       id: decoded.id,
       email: decoded.email,

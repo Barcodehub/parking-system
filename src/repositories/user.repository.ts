@@ -1,22 +1,17 @@
-import prisma from "../config/prisma";
-import { Role, User } from "@prisma/client"; // Usa el modelo generado por Prisma
-import bcrypt from "bcryptjs";
+import { prisma } from "../app";
+import { Role } from "@prisma/client"; // Usa el modelo generado por Prisma
 
 export const findUserByEmail = async (email: string) => {
   return await prisma.user.findUnique({ where: { email } });
 };
 
-export const createUser = async (
-  name: string,
-  email: string,
-  password: string
-)=> {
+export const createUser = async (name: string, email: string, password: string, role: Role) => {
   return await prisma.user.create({
     data: {
       name,
       email,
       password,
-      role: Role.SOCIO,
+      role,
     },
   });
 };

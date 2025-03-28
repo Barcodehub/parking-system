@@ -6,11 +6,11 @@ export const TOKEN_EXPIRATION = "6h";
 export const DATABASE_URL = process.env.DATABASE_URL || "";
 
 // src/models/user.model.ts
-import { Role } from "@prisma/client";
-export interface IUser {
-  id?: number;
-  name: string;
-  email: string;
-  password: string;
-  role?: Role;
-}
+// import { Role } from "@prisma/client";
+// export interface IUser {
+//   id?: number;
+//   name: string;
+//   email: string;
+//   password: string;
+//   role?: Role;
+// }
