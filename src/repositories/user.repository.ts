@@ -1,27 +1,12 @@
-import prisma from '../config/database';
-import { User } from '../models/user.model';
-import { CreateUserDTO } from '../dtos/user.dto';
+import prisma from "../config/prisma";
+import { IUser } from "../models/user.model";
+import bcrypt from "bcryptjs";
 
-export class UserRepository {
-  async create(userData: CreateUserDTO): Promise<User> {
-    return prisma.user.create({
-      data: userData,
-    });
-  }
+export const findUserByEmail = async (email: string) => {
+  return await prisma.user.findUnique({ where: { email } });
+};
 
-  async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { email },
-    });
-  }
-
-  async findById(id: number): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { id },
-    });
-  }
-
-  async findAll(): Promise<User[]> {
-    return prisma.user.findMany();
-  }
-}
+export const createUser = async (user: IUser) => {
+  user.password = await bcrypt.hash(user.password, 10);
+  return await prisma.user.create({ data: user });
+};
