@@ -4,6 +4,7 @@ import {
   } from '../types/parking.types';
   import * as repository from '../repositories/parking.repository';
 import { prisma } from '../app';
+import { Parking, Vehicle } from '@prisma/client';
 
 
   
@@ -58,4 +59,60 @@ import { prisma } from '../app';
       if (!parking) throw new Error('Parqueadero no encontrado');
       return parking;
     }
+
+
+    async getParkingsBySocio(socioId: number): Promise<Parking[]> {
+      const socio = await prisma.user.findUnique({
+        where: { id: socioId },
+        select: { role: true }
+      });
+      
+      if (!socio || socio.role !== 'SOCIO') {
+        throw { message: 'El ID no pertenece a un socio válido', code: 404 };
+      }
+    
+      return await repository.getParkingsBySocio(socioId);
+    }
+
+
+
+
+    async getSocioParkingVehicles(socioId: number, parqueaderoId: number): Promise<Vehicle[]> {
+      // Verificar que el parqueadero pertenece al socio
+      const parking = await prisma.parking.findFirst({
+        where: {
+          id: parqueaderoId,
+          socioId
+        }
+      });
+    
+      if (!parking) {
+        throw { 
+          message: 'El parqueadero no existe o no pertenece al socio', 
+          code: 404 
+        };
+      }
+    
+      return await prisma.vehicle.findMany({
+        where: {
+          parqueaderoId,
+          fechaSalida: null
+        },
+        select: {
+          id: true,
+          placa: true,
+          fechaIngreso: true,
+          fechaSalida: true,
+          parqueaderoId: true
+        }
+      });
+    }
+
+
+
+
+    
   }
+
+
+  

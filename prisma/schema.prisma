@@ -36,8 +36,10 @@ model Parking {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   vehicles     Vehicle[] // Relación con ingresos de vehiculos
-
+  VehicleHistory VehicleHistory[]
+  
   @@map("parkings")
+  
 }
 
 model Vehicle {
@@ -57,6 +59,8 @@ model VehicleHistory {
   fechaIngreso DateTime
   fechaSalida  DateTime
   parqueaderoId Int
+  costo        Decimal  @default(0.0)
+  parqueadero  Parking  @relation(fields: [parqueaderoId], references: [id])
 
   @@map("vehicle_history")
 }

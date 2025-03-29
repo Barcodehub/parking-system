@@ -41,30 +41,62 @@ export const findActiveVehicle = async (placa: string, parqueaderoId: number): P
 
 export const registerVehicleExit = async (placa: string, parqueaderoId: number): Promise<void> => {
   await prisma.$transaction(async (tx) => {
-    // 1. Obtener el vehículo activo
-    const vehicle = await tx.vehicle.findFirst({
+    // 1. Obtener el vehículo activo y la tarifa del parqueadero
+    const vehicleWithParking = await tx.vehicle.findFirst({
       where: {
         placa,
         parqueaderoId,
         fechaSalida: null
+      },
+      include: {
+        parqueadero: {
+          select: {
+            costoPorHora: true
+          }
+        }
       }
     });
 
-    if (!vehicle) throw new Error('Vehículo no encontrado');
+    if (!vehicleWithParking) throw new Error('Vehículo no encontrado');
 
-    // 2. Crear registro en el historial
+    // 2. Calcular el costo
+    const now = new Date();
+    const horasEstancia = (now.getTime() - vehicleWithParking.fechaIngreso.getTime()) / (1000 * 60 * 60);
+    const costo = horasEstancia * vehicleWithParking.parqueadero.costoPorHora.toNumber();
+
+    // 3. Crear registro en el historial con el costo calculado
     await tx.vehicleHistory.create({
       data: {
-        placa: vehicle.placa,
-        fechaIngreso: vehicle.fechaIngreso,
-        fechaSalida: new Date(), // Fecha-hora automática
-        parqueaderoId: vehicle.parqueaderoId
+        placa: vehicleWithParking.placa,
+        fechaIngreso: vehicleWithParking.fechaIngreso,
+        fechaSalida: now,
+        parqueaderoId,
+        costo
       }
     });
 
-    // 3. Eliminar de la tabla de vehículos activos
+    // 4. Eliminar de la tabla de vehículos activos
     await tx.vehicle.delete({
-      where: { id: vehicle.id }
+      where: { id: vehicleWithParking.id }
     });
+  });
+};
+
+
+
+
+export const getActiveVehiclesByParking = async (parqueaderoId: number): Promise<Vehicle[]> => {
+  return await prisma.vehicle.findMany({
+    where: {
+      parqueaderoId,
+      fechaSalida: null
+    },
+    select: {
+      id: true,
+      placa: true,
+      fechaIngreso: true,
+      fechaSalida: true,
+      parqueaderoId: true
+    }
   });
 };

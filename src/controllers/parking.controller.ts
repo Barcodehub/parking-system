@@ -91,3 +91,28 @@ export const getParkingVehicles = async (req: Request, res: Response) => {
     res.status(400).json({ message: errMessage });
   }
 };
+
+
+export const getParkingsBySocio = async (req: Request, res: Response) => {
+  try {
+    const socioId = parseInt(req.params.socioId);
+    const parkings = await parkingService.getParkingsBySocio(socioId);
+    res.json(parkings);
+  } catch (error) {
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
+  }
+};
+
+
+export const getSocioParkingVehicles = async (req: Request, res: Response) => {
+  try {
+    const socioId = parseInt(req.params.socioId);
+    const parqueaderoId = parseInt(req.params.parqueaderoId);
+    const vehicles = await parkingService.getSocioParkingVehicles(socioId, parqueaderoId);
+    res.json(vehicles);
+  } catch (error) {
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
+  }
+};

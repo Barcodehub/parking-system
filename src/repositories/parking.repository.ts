@@ -67,3 +67,19 @@ export const checkParkingCapacity = async (parkingId: number): Promise<{ availab
     capacity: parking.capacidad
   };
 };
+
+
+export const getParkingsBySocio = async (socioId: number): Promise<Parking[]> => {
+  return await prisma.parking.findMany({
+    where: { socioId },
+    select: {
+      id: true,
+      nombre: true,
+      capacidad: true,
+      costoPorHora: true,
+      socioId: true,
+      updatedAt: true,
+      createdAt: true
+    }
+  });
+};

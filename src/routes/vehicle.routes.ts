@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { registerEntry, registerExit } from '../controllers/vehicle.controller';
-import { protect, isSocio } from '../middlewares/auth.middleware';
+import { getVehiclesByParking, registerEntry, registerExit } from '../controllers/vehicle.controller';
+import { protect, isSocio, isAdmin} from '../middlewares/auth.middleware';
 const router = Router();
 
 router.post('/entry', protect, isSocio, registerEntry);
-router.post('/exit', registerExit);
+router.post('/exit', protect, isSocio, registerExit);
 
 export default router;

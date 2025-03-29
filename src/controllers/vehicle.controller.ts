@@ -72,3 +72,27 @@ export const registerExit = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
+export const getVehiclesByParking = async (req: Request, res: Response) => {
+  try {
+    const parqueaderoId = parseInt(req.params.parqueaderoId);
+    const vehicles = await vehicleService.getVehiclesByParking(parqueaderoId);
+    res.json(vehicles);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+// Helper para manejo de errores
+function handleError(res: Response, error: unknown) {
+  if (error instanceof ZodError) {
+    return res.status(400).json({ error: 'Validation error', details: error.errors });
+  }
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    const err = error as { message: string; code?: number };
+    return res.status(err.code || 400).json({ message: err.message });
+  }
+  res.status(500).json({ error: 'Internal server error' });
+}

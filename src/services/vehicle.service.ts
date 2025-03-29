@@ -1,6 +1,7 @@
 import { VehicleEntryDto, VehicleEntryResponse } from '../types/vehicle.types';
 import * as repository from '../repositories/vehicle.repository';
 import { ParkingService } from '../services/parking.service';
+import { Vehicle } from '@prisma/client';
 
 const parkingService = new ParkingService();
 
@@ -55,6 +56,13 @@ export class VehicleService {
 
     // 3. Registrar salida y mover al historial
     await repository.registerVehicleExit(data.placa, data.parqueaderoId);
+  }
+
+
+
+
+  async getVehiclesByParking(parqueaderoId: number): Promise<Vehicle[]> {
+    return await repository.getActiveVehiclesByParking(parqueaderoId);
   }
 
 }
