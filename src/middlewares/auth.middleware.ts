@@ -80,3 +80,14 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   }
   next();
 };
+
+
+
+export const isSocio = (req: Request, res: Response, next: NextFunction) => {
+  const user = (req as any).user;
+  
+  if (user?.role !== 'SOCIO') {
+    return res.status(403).json({ message: 'Acceso denegado' });
+  }
+  next();
+};
