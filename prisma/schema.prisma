@@ -17,9 +17,46 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@map("users")
+  Parking Parking[]
 }
 
 enum Role {
   ADMIN
   SOCIO
+}
+
+
+model Parking {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  capacidad    Int
+  costoPorHora Decimal
+  socioId      Int
+  socio        User     @relation(fields: [socioId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  vehicles     Vehicle[] // Relación con ingresos de vehiculos
+
+  @@map("parkings")
+}
+
+model Vehicle {
+  id           Int       @id @default(autoincrement())
+  placa        String    @db.VarChar(6) // La placa debe tener 6 caracteres
+  fechaIngreso DateTime  @default(now())
+  fechaSalida  DateTime?
+  parqueaderoId Int
+  parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id])
+
+  @@map("vehicles")
+}
+
+model VehicleHistory {
+  id           Int      @id @default(autoincrement())
+  placa        String   @db.VarChar(6)
+  fechaIngreso DateTime
+  fechaSalida  DateTime
+  parqueaderoId Int
+
+  @@map("vehicle_history")
 }
