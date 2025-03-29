@@ -14,7 +14,7 @@ export type User = {
     name: string;
     email: string;
     password: string;
-    role?: Role; // Opcional porque tiene valor por defecto
+    role?: Role; 
   };
   
   export type UserWithoutPassword = Omit<User, 'password'>;

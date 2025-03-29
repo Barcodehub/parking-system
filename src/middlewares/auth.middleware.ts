@@ -31,7 +31,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
-  // Handle both Authorization header and cookies
+  // Authorization header y cookies
   const token = 
     req.headers.authorization?.replace('Bearer ', '') || 
     req.cookies?.token;
@@ -43,14 +43,14 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     
-    // Fetch the full user details
+  
     const user = await getUserById(decoded.id);
     
     if (!user) {
       return res.status(401).json({ message: 'Usuario no encontrado' });
     }
 
-    // Attach the user to the request object
+  
     (req as any).user = {
       id: user.id,
       email: user.email,
@@ -66,7 +66,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
       return res.status(401).json({ message: 'Token inválido' });
     }
     
-    // Catch any other unexpected errors
+    // errors
     console.error('Authentication error:', error);
     return res.status(500).json({ message: 'Error de autenticación' });
   }

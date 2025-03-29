@@ -29,7 +29,14 @@ export class VehicleService {
     }
 
     // 3. Verificar capacidad del parqueadero
-    await parkingService.validateParkingCapacity(data.parqueaderoId);
+    try {
+      await parkingService.validateParkingCapacity(data.parqueaderoId);
+    } catch (error) {
+      throw {
+        message: 'No se puede registrar ingreso: Parqueadero lleno',
+        code: 400
+      };
+    }
 
     // 4. Registrar entrada
     const vehicle = await repository.registerVehicleEntry(data);
@@ -46,10 +53,10 @@ export class VehicleService {
           email: parking.socio.email,
           placa: data.placa,
           mensaje: `Nuevo vehículo registrado en ${parking.nombre}`,
-          parqueaderoNombre: parking.nombre
+          parqueaderoId: parking.nombre
         });
       } catch (error) {
-        console.error('Error al enviar email:', error);
+        console.warn('No se pudo enviar el email. El servicio de email puede estar caído.');
         // mm pa noo se dañe la operación principal si el email falla
       }
     }

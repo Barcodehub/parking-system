@@ -15,7 +15,7 @@ async function seedAdminUser() {
         name: 'Admin',
         email: adminEmail,
         password: hashedPassword,
-        role: 'ADMIN', // Asegúrate que el enum en schema.prisma tenga ADMIN
+        role: 'ADMIN', // Role admin - enum rol
       },
     });
     console.log('Admin user created');
@@ -24,7 +24,7 @@ async function seedAdminUser() {
   }
 }
 
-// Ejecutar solo si es el módulo principal
+
 if (require.main === module) {
   seedAdminUser()
     .catch((e) => {

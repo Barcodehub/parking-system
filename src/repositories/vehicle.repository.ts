@@ -14,7 +14,7 @@ export const findActiveVehicleByPlaca = async (placa: string): Promise<Vehicle |
 export const registerVehicleEntry = async (data: { placa: string, parqueaderoId: number }): Promise<Vehicle> => {
   return await prisma.vehicle.create({
     data: {
-      placa: data.placa.toUpperCase(), // Guardamos en mayúsculas
+      placa: data.placa.toUpperCase(), // mayúsculas
       parqueaderoId: data.parqueaderoId,
       fechaIngreso: new Date() // Fecha automática
     }

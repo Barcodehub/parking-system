@@ -80,7 +80,7 @@ export const checkCapacity = async (req: Request, res: Response) => {
   }
 };
 
-// Nuevo endpoint para obtener vehículos en un parqueadero
+// Obtener vehículos en un parqueadero
 export const getParkingVehicles = async (req: Request, res: Response) => {
   try {
     const parkingId = parseInt(req.params.parkingId);

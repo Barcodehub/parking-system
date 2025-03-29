@@ -1,6 +1,5 @@
 import { Earnings, FirstTimeParked, TopParking, TopSocio, TopVehicle } from '@/types/analytics.types';
 import { PrismaClient } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -86,7 +85,6 @@ export const getTopSocios = async (): Promise<TopSocio[]> => {
       JOIN "parkings" p ON vh."parqueaderoId" = p.id
       JOIN "users" u ON p."socioId" = u.id
       WHERE vh."fechaSalida" >= DATE_TRUNC('week', CURRENT_DATE)
-        AND vh."fechaSalida" <= CURRENT_DATE
         AND vh."costo" > 0
       GROUP BY p."socioId", u."name"
       ORDER BY "total" DESC
@@ -103,16 +101,22 @@ export const getTopSocios = async (): Promise<TopSocio[]> => {
 };
 
 export const getTopParkings = async (): Promise<TopParking[]> => {
-  return await prisma.$queryRaw`
-    SELECT 
-      vh.parqueaderoId as parkingId,
-      p.nombre as parkingName,
-      SUM(p.costoPorHora * EXTRACT(EPOCH FROM (vh.fechaSalida - vh.fechaIngreso))/3600 as total
-    FROM VehicleHistory vh
-    JOIN Parking p ON vh.parqueaderoId = p.id
-    WHERE vh.fechaSalida >= DATE_TRUNC('week', CURRENT_DATE)
-    GROUP BY vh.parqueaderoId, p.nombre
-    ORDER BY total DESC
-    LIMIT 3
-  `;
+  try {
+    const result = await prisma.$queryRaw<TopParking[]>`
+      SELECT 
+        vh."parqueaderoId" as "parkingId",
+        p."nombre" as "parkingName",
+        COALESCE(SUM(vh."costo"), 0)::float as "total"
+      FROM "vehicle_history" vh
+      JOIN "parkings" p ON vh."parqueaderoId" = p."id"
+      WHERE vh."fechaSalida" >= DATE_TRUNC('week', CURRENT_DATE)
+      GROUP BY vh."parqueaderoId", p."nombre"
+      ORDER BY "total" DESC
+      LIMIT 3  -- 3 registros top 3 osea
+    `;
+    return result;
+  } catch (error) {
+    console.error('Error en getTopParkings:', error);
+    throw new Error('Error al obtener el top 3 de parqueaderos');
+  }
 };
