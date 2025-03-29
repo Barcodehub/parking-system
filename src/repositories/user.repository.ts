@@ -1,22 +1,21 @@
 import { prisma } from "../app";
 import { Role } from "@prisma/client"; // Usa el modelo generado por Prisma
+import { User, CreateUserInput, UserWithoutPassword } from '../types/user.types';
 
-export const findUserByEmail = async (email: string) => {
+export const findUserByEmail = async (email: string) : Promise<User | null> => {
   return await prisma.user.findUnique({ where: { email } });
 };
 
-export const createUser = async (name: string, email: string, password: string, role: Role) => {
+export const createUser = async (userData: CreateUserInput): Promise<User> => {
   return await prisma.user.create({
     data: {
-      name,
-      email,
-      password,
-      role,
+      ...userData,
+      role: Role.SOCIO, 
     },
   });
 };
 
 
-export const getUserById = async (id: number) => {
+export const getUserById = async (id: number) : Promise<User | null>  => {
   return await prisma.user.findUnique({ where: { id } });
 };

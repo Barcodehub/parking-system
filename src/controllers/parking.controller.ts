@@ -15,7 +15,8 @@ export const createParking = async (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       res.status(400).json({ errors: error.errors });
     } else {
-      res.status(500).json({ error: "An unexpected error occurred" });
+      const errMessage = error instanceof Error ? error.message : "Unknown error";
+      res.status(400).json({ message: errMessage });
     }
   }
 };
@@ -26,7 +27,8 @@ export const getParking = async (req: Request, res: Response) => {
     const parking = await parkingService.getParking(id);
     res.json(parking);
   } catch (error) {
-    res.status(500).json({ error: "An unexpected error occurred" });
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
   }
 };
 
@@ -35,7 +37,8 @@ export const getAllParkings = async (_req: Request, res: Response) => {
     const parkings = await parkingService.getAllParkings();
     res.json(parkings);
   } catch (error) {
-    res.status(500).json({ error: "An unexpected error occurred" });
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
   }
 };
 
@@ -49,7 +52,8 @@ export const updateParking = async (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       res.status(400).json({ errors: error.errors });
     } else {
-      res.status(500).json({ error: "An unexpected error occurred" });
+      const errMessage = error instanceof Error ? error.message : "Unknown error";
+      res.status(400).json({ message: errMessage });
     }
   }
 };
@@ -60,7 +64,8 @@ export const deleteParking = async (req: Request, res: Response) => {
     await parkingService.deleteParking(id);
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ error: "An unexpected error occurred" });
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
   }
 };
 
@@ -70,7 +75,8 @@ export const checkCapacity = async (req: Request, res: Response) => {
     const capacityInfo = await parkingService.getParkingCapacityInfo(parkingId);
     res.json(capacityInfo);
   } catch (error) {
-    res.status(500).json({ error: "An unexpected error occurred" });
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
   }
 };
 
@@ -81,6 +87,7 @@ export const getParkingVehicles = async (req: Request, res: Response) => {
     const parking = await parkingService.getParkingWithVehicles(parkingId);
     res.json(parking.vehicles);
   } catch (error) {
-    res.status(500).json({ error: "An unexpected error occurred" });
+    const errMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({ message: errMessage });
   }
 };

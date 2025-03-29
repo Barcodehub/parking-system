@@ -1,12 +1,17 @@
 export class AppError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number = 400) {
+  constructor(public message: string, public statusCode: number = 400) {
     super(message);
-    this.statusCode = statusCode;
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
   }
 }
 
-export default AppError;
+export class UserAlreadyExistsError extends AppError {
+  constructor() {
+    super('User already exists', 409);
+  }
+}
+
+export class InvalidEmailError extends AppError {
+  constructor() {
+    super('Invalid email format', 400);
+  }
+}
