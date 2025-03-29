@@ -16,7 +16,7 @@ app.use('/vehicles', vehicleRouter);
 app.use('/analytics', analyticsRouter);
 
 export const prisma = new PrismaClient({
-    log:['query']
+  //  log:['query']
 });
 seedAdminUser()
 

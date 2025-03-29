@@ -2,10 +2,14 @@ import { VehicleEntryDto, VehicleEntryResponse } from '../types/vehicle.types';
 import * as repository from '../repositories/vehicle.repository';
 import { ParkingService } from '../services/parking.service';
 import { Vehicle } from '@prisma/client';
+import { prisma } from '../app';
+import axios from 'axios';
 
 const parkingService = new ParkingService();
 
 export class VehicleService {
+  private emailServiceUrl = process.env.EMAIL_SERVICE_URL || 'http://localhost:3001/email/send';
+
   async registerEntry(data: VehicleEntryDto): Promise<VehicleEntryResponse> {
     // 1. Validar formato de placa
     if (!repository.validatePlacaFormat(data.placa)) {
@@ -30,6 +34,26 @@ export class VehicleService {
     // 4. Registrar entrada
     const vehicle = await repository.registerVehicleEntry(data);
     
+    // Obtener info del parqueadero para el email
+    const parking = await prisma.parking.findUnique({
+      where: { id: data.parqueaderoId },
+      select: { nombre: true, socio: { select: { email: true } } }
+    });
+
+    if (parking) {
+      try {
+        await axios.post(this.emailServiceUrl, {
+          email: parking.socio.email,
+          placa: data.placa,
+          mensaje: `Nuevo vehículo registrado en ${parking.nombre}`,
+          parqueaderoNombre: parking.nombre
+        });
+      } catch (error) {
+        console.error('Error al enviar email:', error);
+        // mm pa noo se dañe la operación principal si el email falla
+      }
+    }
+
     return { id: vehicle.id };
   }
 
