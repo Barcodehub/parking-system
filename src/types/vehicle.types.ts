@@ -12,5 +12,5 @@ export interface VehicleEntryDto {
 
   export interface VehicleEntryResponse {
     id: number;
-    correoEnviado: string;
+    mensaje: string;
   }

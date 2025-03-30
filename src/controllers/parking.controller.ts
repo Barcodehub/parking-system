@@ -8,7 +8,7 @@ const parkingService = new ParkingService();
 export const createParking = async (req: Request, res: Response) => {
   const validatedData = createParkingSchema.parse(req.body);
   const parking = await parkingService.createParking(validatedData);
-  res.status(201).json(parking);
+  res.status(201).json({ id: parking.id });
 };
 
 export const getParking = async (req: Request, res: Response) => {

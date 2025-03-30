@@ -59,7 +59,7 @@ export class VehicleService {
 
     return { 
       id: vehicle.id,
-      correoEnviado: emailSent ? "Correo enviado" : "Correo no enviado"
+      mensaje: emailSent ? "Correo enviado" : "Correo no enviado"
     };
   }
 

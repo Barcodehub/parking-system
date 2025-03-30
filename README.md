@@ -183,7 +183,7 @@ Permisos: Admin
 GET /analytics/parking/{parkingId}/earnings
 Descripción: Ganancias (hoy/semana/mes/año) de un parqueadero
 Headers: Authorization: Bearer {token}
-Permisos: Admin/Socio
+Permisos: Socio
 ```
 
 ```http
@@ -285,22 +285,22 @@ Permisos: Admin
 ```
 
 ```http
-GET /parkings/{id}/vehicles
-Descripción: Lista vehículos en el parqueadero
+GET /parkings/{ParkingID}/vehicles
+Descripción: Lista vehículos en algun parqueadero
 Headers: Authorization: Bearer {token}
 Permisos: Admin
 ```
 
 ```http
 GET /parkings/my-parkings
-Descripción: Lista parqueaderos del socio actual
+Descripción: listado de los parqueaderos que tiene asociados
 Headers: Authorization: Bearer {token}
 Permisos: Socio
 ```
 
 ```http
-GET /parkings/my-parkings/{id}/vehicles
-Descripción: Vehículos en parqueadero del socio
+GET /parkings/my-parkings/{ParkingID}/vehicles
+Descripción: Vehículos en parqueadero que le pertenezca
 Headers: Authorization: Bearer {token}
 Permisos: Socio
 ```
@@ -315,7 +315,7 @@ Body: {
   "email": "destino@mail.com",
   "placa": "ABC123",
   "mensaje": "Su vehículo ha ingresado",
-  "parqueaderoNombre": "Parqueadero Central"
+  "parqueaderoId": "1"
 }
 ```
 
