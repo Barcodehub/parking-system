@@ -4,25 +4,56 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const getTopVehiclesGlobal = async (): Promise<TopVehicle[]> => {
-  return await prisma.vehicleHistory.groupBy({
-    by: ['placa'],
-    _count: { placa: true },
-    orderBy: { _count: { placa: 'desc' } },
-    take: 10
-  }).then(results => 
-    results.map(r => ({ placa: r.placa, count: r._count.placa }))
-)};
+  const [activeVehicles, historyVehicles] = await Promise.all([
+    prisma.vehicle.groupBy({
+      by: ['placa'],
+      _count: { placa: true },
+    }),
+    prisma.vehicleHistory.groupBy({
+      by: ['placa'],
+      _count: { placa: true },
+    })
+  ]);
+
+  // Combinar y sumar los resultados
+  const combined = [...activeVehicles, ...historyVehicles].reduce((acc, curr) => {
+    acc[curr.placa] = (acc[curr.placa] || 0) + curr._count.placa;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Ordenar y limitar
+  return Object.entries(combined)
+    .map(([placa, count]) => ({ placa, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+};
 
 export const getTopVehiclesByParking = async (parkingId: number): Promise<TopVehicle[]> => {
-  return await prisma.vehicleHistory.groupBy({
-    by: ['placa'],
-    where: { parqueaderoId: parkingId },
-    _count: { placa: true },
-    orderBy: { _count: { placa: 'desc' } },
-    take: 10
-  }).then(results => 
-    results.map(r => ({ placa: r.placa, count: r._count.placa }))
-)};
+  const [activeVehicles, historyVehicles] = await Promise.all([
+    prisma.vehicle.groupBy({
+      by: ['placa'],
+      where: { parqueaderoId: parkingId },
+      _count: { placa: true },
+    }),
+    prisma.vehicleHistory.groupBy({
+      by: ['placa'],
+      where: { parqueaderoId: parkingId },
+      _count: { placa: true },
+    })
+  ]);
+
+  // Combinar y sumar los resultados
+  const combined = [...activeVehicles, ...historyVehicles].reduce((acc, curr) => {
+    acc[curr.placa] = (acc[curr.placa] || 0) + curr._count.placa;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Ordenar y limitar
+  return Object.entries(combined)
+    .map(([placa, count]) => ({ placa, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+};
 
 export const getFirstTimeParked = async (parkingId: number): Promise<FirstTimeParked[]> => {
   try {

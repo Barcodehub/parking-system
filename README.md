@@ -67,9 +67,8 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
    - JWT_SECRET=`tu_secreto_jwt`
    - EMAIL_SERVICE_URL=`http://localhost:3001/email/send`
 
-5. Base de datos:
-   - `npx prisma migrate dev --name init`
-   - `npx prisma generate`
+5. Correr migraciones de Prisma:
+   - `npm run prisma:migrate`
   
 6. Run
    - `npm run dev`
