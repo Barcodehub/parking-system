@@ -1,5 +1,27 @@
 # Parking Management API
 
+## Índice
+1. [Descripción](#descripción)
+2. [Características principales](#características-principales)
+3. [Roles y Permisos](#roles-y-permisos)
+   - [Admin](#admin-puede)
+   - [Socio](#socio-puede)
+4. [Instalación](#instalación)
+   - [Requisitos previos](#1-requisitos-previos:)
+   - [Configuración inicial](#2-configuración-inicial)
+   - [Configuración de entorno](#3-configuración-de-entorno)
+   - [Base de datos](#5-base-de-datos)
+   - [Ejecución](#6-run)
+   - [Microservicio Email](#7-run-microservice-api-email)
+5. [Estructura de directorios](#estructura-de-directorios)
+6. [Endpoints del Sistema](#endpoints-del-sistema)
+   - [Autenticación](#AUTHENTICACIÓN)
+   - [Analíticas](#Analitycs)
+   - [Vehículos](#vehículos)
+   - [Parqueaderos](#parqueaderos)
+   - [Email (Simulación)](#email-simulación)
+
+
 ## Descripción:
 API para gestión de parqueaderos con autenticación de usuarios, registro de vehículos y análisis de datos. Desarrollada con Express, TypeScript y Prisma.
 
@@ -118,26 +140,182 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
   .env                  # Variables de entorno
   ```
 
-## Endpoints principales:
+## ENDPOINTS DEL SISTEMA
 
-  ### Autenticación:
-  - POST `/auth/register` - Registro de socios
-  - POST `/auth/login` - Login de usuarios
-  
-  ### Parqueaderos:
-  - GET `/parkings` - Listar todos
-  - POST `/parkings` - Crear nuevo
-  - GET `/parkings/:id` - Obtener por ID
-  - GET `/parkings/socio/:socioId` - Parqueaderos de un socio
-  
-  ### Vehículos:
-  - POST `/vehicles/entry` - Registrar entrada
-  - POST `/vehicles/exit` - Registrar salida
-  
-  ## Analíticas:
-  - GET `/analytics/vehicles/top-global` - Top 10 vehículos
-  - GET `/analytics/parking/:id/earnings` - Ganancias por periodos
-  - GET `/analytics/socios/top` - Top 3 socios
-  - GET `/analytics/parkings/top` - Top 3 parqueaderos
+### AUTHENTICACIÓN
 
+```http
+POST /auth/login
+Descripción: Iniciar sesión (guarda token automáticamente)
+Body: {"email": "string", "password": "string"}
+Permisos: Público
+```
+```http
+POST /auth/socio
+Descripción: Registra un nuevo socio (solo admin)
+Headers: Authorization: Bearer {token}
+Body: {"name": "Nombre", "email": "email@valido.com", "password": "contraseña"}
+Permisos: Admin
+```
+```http
+POST /auth/logout
+Descripción: Cierra la sesión actual
+Headers: Authorization: Bearer {token}
+Permisos: Cualquier usuario autenticado
+```
+
+### Analitycs
+```http
+GET /analytics/vehicles/top-global
+Descripción: Top 10 vehículos más registrados en todos los parqueaderos
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/socios/top
+Descripción: Top 3 socios con más ingresos esta semana
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /analytics/parking/{parkingId}/earnings
+Descripción: Ganancias (hoy/semana/mes/año) de un parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/parking/{parkingId}/vehicles/top
+Descripción: Top 10 vehículos más registrados en un parqueadero específico
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/parking/{parkingId}/vehicles/first-time
+Descripción: Vehículos registrados por primera vez en el parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/parkings/top
+Descripción: Top 3 parqueaderos con mayor ganancia semanal
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+
+### VEHÍCULOS
+
+```http
+POST /vehicles/entry
+Descripción: Registrar entrada de vehículo
+Headers: Authorization: Bearer {token}
+Body: {"placa": "ABC123", "parqueaderoId": 1}
+Permisos: Socio
+```
+
+```http
+POST /vehicles/exit
+Descripción: Registrar salida de vehículo
+Headers: Authorization: Bearer {token}
+Body: {"placa": "ABC123", "parqueaderoId": 1}
+Permisos: Socio
+```
+
+
+
+### Parqueaderos
+
+```http
+POST /parkings
+Descripción: Crea nuevo parqueadero
+Headers: Authorization: Bearer {token}
+Body: {
+  "nombre": "Nombre",
+  "capacidad": 50,
+  "costoPorHora": 3.5,
+  "socioId": 2
+}
+Permisos: Admin
+```
+
+```http
+GET /parkings
+Descripción: Lista TODOS los parqueaderos
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /parkings/{id}
+Descripción: Obtiene detalles de un parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+PUT /parkings/{id}
+Descripción: Actualiza parqueadero
+Headers: Authorization: Bearer {token}
+Body: {
+  "nombre": "Nombre Actualizado",
+  "capacidad": 60,
+  "costoPorHora": 4.0,
+  "socioId": 2
+}
+Permisos: Admin
+```
+
+```http
+DELETE /parkings/{id}
+Descripción: Elimina un parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /parkings/{id}/capacity
+Descripción: Consulta capacidad disponible
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /parkings/{id}/vehicles
+Descripción: Lista vehículos en el parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /parkings/my-parkings
+Descripción: Lista parqueaderos del socio actual
+Headers: Authorization: Bearer {token}
+Permisos: Socio
+```
+
+```http
+GET /parkings/my-parkings/{id}/vehicles
+Descripción: Vehículos en parqueadero del socio
+Headers: Authorization: Bearer {token}
+Permisos: Socio
+```
+
+
+### EMAIL (SIMULACIÓN)
+
+```http
+POST /email/send
+Descripción: Simula envío de notificación por email
+Body: {
+  "email": "destino@mail.com",
+  "placa": "ABC123",
+  "mensaje": "Su vehículo ha ingresado",
+  "parqueaderoNombre": "Parqueadero Central"
+}
+```
 

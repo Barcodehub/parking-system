@@ -1,33 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/env";
 import { getUserById } from '../repositories/user.repository';
-
-
-
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    
-    // un attach al usuario
-    (req as any).user = {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role
-    };
-
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
-  }
-};
-
 
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {

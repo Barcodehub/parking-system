@@ -68,33 +68,26 @@ export class ParkingService {
   }
 
   async getParkingsBySocio(socioId: number): Promise<Parking[]> {
-    const socio = await prisma.user.findUnique({
-      where: { id: socioId },
-      select: { role: true }
+    return await prisma.parking.findMany({
+      where: { socioId }
     });
-    
-    if (!socio || socio.role !== 'SOCIO') {
-      throw new BadRequestError('El ID no pertenece a un socio válido');
-    }
-  
-    return await repository.getParkingsBySocio(socioId);
   }
 
-  async getSocioParkingVehicles(socioId: number, parqueaderoId: number): Promise<Vehicle[]> {
+  async getSocioParkingVehicles(socioId: number, parkingId: number): Promise<Vehicle[]> {
     const parking = await prisma.parking.findFirst({
       where: {
-        id: parqueaderoId,
-        socioId
+        id: parkingId,
+        socioId // q parking pertenece al socio
       }
     });
   
     if (!parking) {
-      throw new NotFoundError('El parqueadero no existe o no pertenece al socio');
+      throw new NotFoundError('Parqueadero no encontrado o no tienes permisos');
     }
   
     return await prisma.vehicle.findMany({
       where: {
-        parqueaderoId,
+        parqueaderoId: parkingId,
         fechaSalida: null
       },
       select: {

@@ -47,15 +47,15 @@ export const getParkingVehicles = async (req: Request, res: Response) => {
   res.json(parking.vehicles);
 };
 
-export const getParkingsBySocio = async (req: Request, res: Response) => {
-  const socioId = parseInt(req.params.socioId);
+export const getMyParkings = async (req: Request, res: Response) => {
+  const socioId = (req as any).user.id;
   const parkings = await parkingService.getParkingsBySocio(socioId);
   res.json(parkings);
 };
 
-export const getSocioParkingVehicles = async (req: Request, res: Response) => {
-  const socioId = parseInt(req.params.socioId);
-  const parqueaderoId = parseInt(req.params.parqueaderoId);
-  const vehicles = await parkingService.getSocioParkingVehicles(socioId, parqueaderoId);
+export const getMyParkingVehicles = async (req: Request, res: Response) => {
+  const socioId = (req as any).user.id;
+  const parkingId = parseInt(req.params.parkingId);
+  const vehicles = await parkingService.getSocioParkingVehicles(socioId, parkingId);
   res.json(vehicles);
 };
