@@ -4,11 +4,17 @@ import { findUserByEmail } from "../repositories/user.repository";
 import bcrypt from "bcryptjs";
 import * as userRepository from '../repositories/user.repository';
 import { CreateUserInput, UserWithoutPassword } from '../types/user.types';
+import { ConflictError, NotFoundError, UnauthorizedError, ValidationError } from "../errors/appError";
+
 
 export const login = async (email: string, password: string) => {
   const user = await findUserByEmail(email);
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new Error("Invalid credentials");
+  if (!user) {
+    throw new NotFoundError('User no encontrado');
+  }
+  
+  if (!(await bcrypt.compare(password, user.password))) {
+    throw new UnauthorizedError('Invalida contraseña');
   }
   const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
     expiresIn: TOKEN_EXPIRATION,
@@ -18,24 +24,23 @@ export const login = async (email: string, password: string) => {
 
 
 
-
 export const registerUser = async (userData: CreateUserInput): Promise<UserWithoutPassword> => {
   const { email, password } = userData;
   
   // Validar email
   if (!isValidEmail(email)) {
-    throw new Error('Invalid email format');
+    throw new ValidationError('Invalid email formato');
   }
 
   // Validar contraseña
   if (!isValidPassword(password)) {
-    throw new Error('Password must be at least 8 characters long');
+    throw new ValidationError('La contraseña debe ser al menos de 8 digitos de longitud');
   }
 
   const existingUser = await userRepository.findUserByEmail(email);
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new ConflictError('El usuario ya existe');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -50,6 +55,7 @@ export const registerUser = async (userData: CreateUserInput): Promise<UserWitho
   
   return userWithoutPassword;
 };
+
 
 // Helper functions
 const isValidEmail = (email: string): boolean => {

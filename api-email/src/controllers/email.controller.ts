@@ -4,9 +4,9 @@ import { EmailService } from '../services/email.service';
 const emailService = new EmailService();
 
 export const sendEmail = async (req: Request, res: Response) => {
-  const { email, placa, mensaje, parqueaderoNombre } = req.body;
+  const { email, placa, mensaje, parqueaderoId } = req.body;
   
-  if (!email || !placa || !mensaje || !parqueaderoNombre) {
+  if (!email || !placa || !mensaje || !parqueaderoId) {
     return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
 
@@ -15,7 +15,7 @@ export const sendEmail = async (req: Request, res: Response) => {
       email,
       placa,
       mensaje,
-      parqueaderoNombre
+      parqueaderoId
     });
     res.status(200).json(result);
   } catch (error) {

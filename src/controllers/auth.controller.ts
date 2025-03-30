@@ -1,43 +1,23 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {login, registerUser } from "../services/auth.service";
 import { CreateUserInput } from "@/types/user.types";
-import { ZodError } from 'zod';
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
     const result = await login(email, password);
     res.json(result);
   } catch (error) {
-    if (error instanceof ZodError) {
-      res.status(400).json({ errors: error.errors });
-    } else {
-      const errMessage = error instanceof Error ? error.message : "Unknown error";
-      res.status(400).json({ message: errMessage });
-    }
+    next(error); //error -> middleware
   }
 };
 
-export const createSocio = async (req: Request, res: Response) => {
+export const createSocio = async (req: Request<{}, {}, CreateUserInput>, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password } = req.body;
-    
-    // Validar entrada
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const userData: CreateUserInput = { name, email, password };
-    const user = await registerUser(userData);
-    
+    const user = await registerUser(req.body);
     res.status(201).json(user);
   } catch (error) {
-    if (error instanceof ZodError) {
-      res.status(400).json({ errors: error.errors });
-    } else {
-      const errMessage = error instanceof Error ? error.message : "Unknown error";
-      res.status(400).json({ message: errMessage });
-    }
+    next(error); 
   }
 };
 

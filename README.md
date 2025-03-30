@@ -76,8 +76,12 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
   │   ├── parking.controller.ts
   │   └── vehicle.controller.ts
   │
-  ├── middlewares/      # Middlewares de Express
-  │   ├── auth.middleware.ts       # Autenticación
+  ├── errors/
+  │   ├── appError.ts
+  │
+  ├── middlewares/               # Middlewares 
+  │   ├── auth.middleware.ts           # Autenticación   
+  │   ├── errorHandler.middleware.ts   #Manejo de errores
   │
   ├── repositories/     # Acceso a datos (Prisma)
   │   ├── analytics.repository.ts
