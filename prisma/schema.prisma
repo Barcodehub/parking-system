@@ -37,7 +37,7 @@ model Parking {
   socio        User     @relation(fields: [socioId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  vehicles     Vehicle[] // Relación con ingresos de vehiculos
+  vehicles     Vehicle[]  
   VehicleHistory VehicleHistory[]
   
   @@map("parkings")
@@ -51,7 +51,7 @@ model Vehicle {
   fechaSalida  DateTime?
   parqueaderoId Int
   socioId      Int 
-  parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id])
+  parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id], onDelete: Cascade)
   socio        User     @relation(fields: [socioId], references: [id])
   @@map("vehicles")
 }
@@ -64,7 +64,7 @@ model VehicleHistory {
   parqueaderoId Int
   costo        Decimal  @default(0.0)
   socioId      Int 
-  parqueadero  Parking  @relation(fields: [parqueaderoId], references: [id])
+  parqueadero  Parking  @relation(fields: [parqueaderoId], references: [id], onDelete: Cascade)
   socio        User     @relation(fields: [socioId], references: [id])
 
   @@map("vehicle_history")

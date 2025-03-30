@@ -59,13 +59,13 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 ALTER TABLE "parkings" ADD CONSTRAINT "parkings_socioId_fkey" FOREIGN KEY ("socioId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_parqueaderoId_fkey" FOREIGN KEY ("parqueaderoId") REFERENCES "parkings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_parqueaderoId_fkey" FOREIGN KEY ("parqueaderoId") REFERENCES "parkings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_socioId_fkey" FOREIGN KEY ("socioId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "vehicle_history" ADD CONSTRAINT "vehicle_history_parqueaderoId_fkey" FOREIGN KEY ("parqueaderoId") REFERENCES "parkings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "vehicle_history" ADD CONSTRAINT "vehicle_history_parqueaderoId_fkey" FOREIGN KEY ("parqueaderoId") REFERENCES "parkings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "vehicle_history" ADD CONSTRAINT "vehicle_history_socioId_fkey" FOREIGN KEY ("socioId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
