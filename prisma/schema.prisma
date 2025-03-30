@@ -53,7 +53,7 @@ model Vehicle {
   parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id])
   socio        User     @relation(fields: [socioId], references: [id])
 
-  @@unique([placa])
+  @@unique([placa, fechaSalida]) //nullo solo si fechasalida=null
   @@map("vehicles")
 }
 
