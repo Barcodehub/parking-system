@@ -81,9 +81,9 @@ export class ParkingService {
       }
     });
   
-    if (!parking) {
-      throw new NotFoundError('Parqueadero no encontrado o no tienes permisos');
-    }
+    // if (!parking) {
+    //   throw new NotFoundError('Parqueadero no encontrado o no tienes permisos');
+    // }
   
     return await prisma.vehicle.findMany({
       where: {
@@ -95,7 +95,8 @@ export class ParkingService {
         placa: true,
         fechaIngreso: true,
         fechaSalida: true,
-        parqueaderoId: true
+        parqueaderoId: true,
+        socioId: true 
       }
     });
   }

@@ -51,7 +51,7 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
 ## Instalación:
 
 1. Requisitos previos:
-   - Node.js 18+ instalado
+   - Node.js 18+, npm, instalados
    - PostgreSQL 14+ corriendo
 
 2. Configuración inicial:
@@ -62,7 +62,7 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
 3. Configuración de entorno:
    Crear archivo `.env` en la raíz con:
 
-   - DATABASE_URL=`postgresql://user:password@localhost:5432/parkingdb?schema=public`
+   - DATABASE_URL=`postgresql://user:password@localhost:<Your_PORT_Postgres>/parkingdb?schema=public`
    - PORT=`3000`
    - JWT_SECRET=`tu_secreto_jwt`
    - EMAIL_SERVICE_URL=`http://localhost:3001/email/send`
@@ -76,6 +76,7 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
 
 7. Run microservice "api-email", abre otra terminal y escribe:
    - cd api-email
+   - `npm install`
    - `npm run dev`
 
 ## Estructura de directorios:

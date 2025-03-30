@@ -5,18 +5,22 @@ const prisma = new PrismaClient();
 export const findActiveVehicleByPlaca = async (placa: string): Promise<Vehicle | null> => {
   return await prisma.vehicle.findFirst({
     where: {
-      placa,
-      fechaSalida: null
+      placa
     }
   });
 };
 
-export const registerVehicleEntry = async (data: { placa: string, parqueaderoId: number }): Promise<Vehicle> => {
+export const registerVehicleEntry = async (data: { 
+  placa: string, 
+  parqueaderoId: number,
+  socioId: number // Ahora se provee automáticamente
+}): Promise<Vehicle> => {
   return await prisma.vehicle.create({
     data: {
-      placa: data.placa.toUpperCase(), // mayúsculas
+      placa: data.placa.toUpperCase(),
       parqueaderoId: data.parqueaderoId,
-      fechaIngreso: new Date() // Fecha automática
+      socioId: data.socioId, // Recibido del servicio
+      fechaIngreso: new Date()
     }
   });
 };
@@ -75,12 +79,16 @@ export const registerVehicleExit = async (placa: string, parqueaderoId: number):
       }
     });
 
-    // 4. Eliminar de la tabla de vehículos activos
-    await tx.vehicle.delete({
-      where: { id: vehicleWithParking.id }
-    });
+   // 4. ACTUALIZAR el vehículo en lugar de eliminarlo (cambio clave)
+   await tx.vehicle.update({
+    where: { id: vehicleWithParking.id },
+    data: {
+      fechaSalida: now
+    }
   });
+});
 };
+
 
 
 
@@ -96,7 +104,8 @@ export const getActiveVehiclesByParking = async (parqueaderoId: number): Promise
       placa: true,
       fechaIngreso: true,
       fechaSalida: true,
-      parqueaderoId: true
+      parqueaderoId: true,
+      socioId: true 
     }
   });
 };

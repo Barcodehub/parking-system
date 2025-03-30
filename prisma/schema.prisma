@@ -18,6 +18,7 @@ model User {
 
   @@map("users")
   Parking Parking[]
+  Vehicle Vehicle[]
 }
 
 enum Role {
@@ -48,8 +49,11 @@ model Vehicle {
   fechaIngreso DateTime  @default(now())
   fechaSalida  DateTime?
   parqueaderoId Int
+  socioId      Int 
   parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id])
+  socio        User     @relation(fields: [socioId], references: [id])
 
+  @@unique([placa])
   @@map("vehicles")
 }
 

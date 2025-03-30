@@ -6,7 +6,10 @@ const vehicleService = new VehicleService();
 
 export const registerEntry = async (req: Request, res: Response) => {
   const validatedData = vehicleEntrySchema.parse(req.body);
-  const result = await vehicleService.registerEntry(validatedData);
+  const result = await vehicleService.registerEntry({
+    ...validatedData,
+    socioId: (req as any).user.id // ID del usuario autenticado
+  });
   res.status(201).json(result);
 };
 

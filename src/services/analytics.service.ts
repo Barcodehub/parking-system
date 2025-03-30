@@ -6,7 +6,7 @@ import {
     FirstTimeParked
   } from '../types/analytics.types';
   import * as repository from '../repositories/analytics.repository';
-  import { NotFoundError } from '../errors/appError';
+  import { ForbiddenError, NotFoundError } from '../errors/appError';
 import { prisma } from '../app';
 
 export class AnalyticsService {
@@ -40,15 +40,23 @@ export class AnalyticsService {
     return await repository.getFirstTimeParked(parkingId);
   }
 
-  async getParkingEarnings(parkingId: number): Promise<Earnings> {
-    const parkingExists = await prisma.parking.findUnique({
-      where: { id: parkingId }
+  async getParkingEarnings(parkingId: number, socioId: number): Promise<Earnings> {
+    // Verificar que el parqueadero exista y pertenezca al socio
+    const parking = await prisma.parking.findUnique({
+      where: { id: parkingId },
+      select: { socioId: true }
     });
-    if (!parkingExists) {
+
+    if (!parking) {
       throw new NotFoundError('Parqueadero no encontrado');
     }
+
+    if (parking.socioId !== socioId) {
+      throw new ForbiddenError('No tienes permiso para acceder a este parqueadero');
+    }
+
     return await repository.getParkingEarnings(parkingId);
-  }
+}
 
   async getTopSocios(): Promise<TopSocio[]> {
     try {

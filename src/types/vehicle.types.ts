@@ -1,6 +1,7 @@
 export interface VehicleEntryDto {
     placa: string;
     parqueaderoId: number;
+    socioId: number;
   }
   
   export interface VehicleEntryResponse {

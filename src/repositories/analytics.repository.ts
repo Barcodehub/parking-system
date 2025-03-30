@@ -73,30 +73,33 @@ const calculateEarnings = async (parkingId: number, from: Date, to: Date): Promi
   return result._sum.costo?.toNumber() || 0;
 };
 
+// CORREGIR  -> SALIDAS Disque 0
 export const getTopSocios = async (): Promise<TopSocio[]> => {
   try {
     const result = await prisma.$queryRaw<TopSocio[]>`
       SELECT 
-        p."socioId" as "socioId", 
-        u."name" as "socioName",
-        COUNT(vh.id)::integer as "count",
-        COALESCE(SUM(vh."costo"), 0)::decimal as "total"
-      FROM "vehicle_history" vh
-      JOIN "parkings" p ON vh."parqueaderoId" = p.id
-      JOIN "users" u ON p."socioId" = u.id
-      WHERE vh."fechaSalida" >= DATE_TRUNC('week', CURRENT_DATE)
-        AND vh."costo" > 0
-      GROUP BY p."socioId", u."name"
-      ORDER BY "total" DESC
-      LIMIT 3
+      u.id as "socioId",
+      u.name as "socioName",
+      COUNT(v.id)::integer as "vehicleCount",
+      COALESCE(SUM(CASE WHEN v."fechaSalida" IS NOT NULL THEN 1 ELSE 0 END), 0)::integer as "exitCount"
+    FROM 
+      "users" u
+    JOIN 
+      "vehicles" v ON u.id = v."socioId"  
+    WHERE 
+      v."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
+      AND u.role = 'SOCIO'
+    GROUP BY 
+      u.id, u.name
+    ORDER BY 
+      "vehicleCount" DESC
+    LIMIT 3;
+
     `;
-    return result.map(item => ({
-      ...item,
-      total: parseFloat(item.total.toString()) // Convertir Decimal a número
-    }));
+    return result;
   } catch (error) {
     console.error('Error en getTopSocios:', error);
-    throw new Error('Error al obtener los top socios');
+    throw new Error('Error al obtener el top 3 de socios');
   }
 };
 

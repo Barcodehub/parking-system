@@ -6,8 +6,8 @@ export interface TopVehicle {
   export interface TopSocio {
     socioId: number;
     socioName: string;
-    count: number;
-    total: number;
+    vehicleCount: number;
+    exitCount: number;
   }
   
   export interface TopParking {

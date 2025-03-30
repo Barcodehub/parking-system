@@ -13,7 +13,7 @@ app.use(routes);
 app.use(errorHandler);
 
 export const prisma = new PrismaClient({
-  //  log:['query']
+   log:['query']
 });
 seedAdminUser() 
 
