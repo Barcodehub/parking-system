@@ -18,6 +18,7 @@ model User {
 
   @@map("users")
   Parking Parking[]
+  VehicleHistory VehicleHistory[]
   Vehicle Vehicle[]
 }
 
@@ -52,8 +53,6 @@ model Vehicle {
   socioId      Int 
   parqueadero  Parking   @relation(fields: [parqueaderoId], references: [id])
   socio        User     @relation(fields: [socioId], references: [id])
-
-  @@unique([placa, fechaSalida]) //nullo solo si fechasalida=null
   @@map("vehicles")
 }
 
@@ -64,7 +63,9 @@ model VehicleHistory {
   fechaSalida  DateTime
   parqueaderoId Int
   costo        Decimal  @default(0.0)
+  socioId      Int 
   parqueadero  Parking  @relation(fields: [parqueaderoId], references: [id])
+  socio        User     @relation(fields: [socioId], references: [id])
 
   @@map("vehicle_history")
 }

@@ -10,17 +10,14 @@ export const findActiveVehicleByPlaca = async (placa: string): Promise<Vehicle |
   });
 };
 
-export const registerVehicleEntry = async (data: { 
-  placa: string, 
-  parqueaderoId: number,
-  socioId: number // Ahora se provee automáticamente
-}): Promise<Vehicle> => {
+
+export const registerVehicleEntry = async (data: { placa: string, parqueaderoId: number, socioId: number  }): Promise<Vehicle> => {
   return await prisma.vehicle.create({
     data: {
-      placa: data.placa.toUpperCase(),
+      placa: data.placa.toUpperCase(), // mayúsculas
       parqueaderoId: data.parqueaderoId,
-      socioId: data.socioId, // Recibido del servicio
-      fechaIngreso: new Date()
+      socioId: data.socioId,
+      fechaIngreso: new Date() // Fecha automática
     }
   });
 };
@@ -43,7 +40,7 @@ export const findActiveVehicle = async (placa: string, parqueaderoId: number): P
   });
 };
 
-export const registerVehicleExit = async (placa: string, parqueaderoId: number): Promise<void> => {
+export const registerVehicleExit = async (socioId: number, placa: string, parqueaderoId: number): Promise<void> => {
   await prisma.$transaction(async (tx) => {
     // 1. Obtener el vehículo activo y la tarifa del parqueadero
     const vehicleWithParking = await tx.vehicle.findFirst({
@@ -75,18 +72,16 @@ export const registerVehicleExit = async (placa: string, parqueaderoId: number):
         fechaIngreso: vehicleWithParking.fechaIngreso,
         fechaSalida: now,
         parqueaderoId,
+        socioId: socioId, // Recibido del servicio
         costo
       }
     });
 
-   // 4. ACTUALIZAR el vehículo en lugar de eliminarlo (cambio clave)
-   await tx.vehicle.update({
-    where: { id: vehicleWithParking.id },
-    data: {
-      fechaSalida: now
-    }
+    // 4. Eliminar de la tabla de vehículos activos
+    await tx.vehicle.delete({
+      where: { id: vehicleWithParking.id }
+    });
   });
-});
 };
 
 

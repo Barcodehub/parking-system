@@ -78,25 +78,51 @@ export const getTopSocios = async (): Promise<TopSocio[]> => {
   try {
     const result = await prisma.$queryRaw<TopSocio[]>`
       SELECT 
-      u.id as "socioId",
-      u.name as "socioName",
-      COUNT(v.id)::integer as "vehicleCount",
-      COALESCE(SUM(CASE WHEN v."fechaSalida" IS NOT NULL THEN 1 ELSE 0 END), 0)::integer as "exitCount"
-    FROM 
-      "users" u
-    JOIN 
-      "vehicles" v ON u.id = v."socioId"  
-    WHERE 
-      v."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
-      AND u.role = 'SOCIO'
-    GROUP BY 
-      u.id, u.name
-    ORDER BY 
-      "vehicleCount" DESC
-    LIMIT 3;
-
+        u.id as "socioId",
+        u.name as "socioName",
+        (
+          SELECT COUNT(*) 
+          FROM "vehicles" v
+          WHERE v."socioId" = u.id
+          AND v."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
+        ) + (
+          SELECT COUNT(*)
+          FROM "vehicle_history" vh
+          WHERE vh."socioId" = u.id
+          AND vh."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
+        ) as "totalIngresos",
+        (
+          SELECT COUNT(*)
+          FROM "vehicle_history" vh
+          WHERE vh."socioId" = u.id
+          AND vh."fechaSalida" >= DATE_TRUNC('week', CURRENT_DATE)
+        ) as "totalSalidas"
+      FROM 
+        "users" u
+      WHERE 
+        u.role = 'SOCIO'
+        AND (
+          EXISTS (
+            SELECT 1 FROM "vehicles" v
+            WHERE v."socioId" = u.id
+            AND v."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
+          )
+          OR EXISTS (
+            SELECT 1 FROM "vehicle_history" vh
+            WHERE vh."socioId" = u.id
+            AND vh."fechaIngreso" >= DATE_TRUNC('week', CURRENT_DATE)
+          )
+        )
+      ORDER BY 
+        "totalIngresos" DESC
+      LIMIT 3;
     `;
-    return result;
+
+    return result.map(item => ({
+      ...item,
+      totalIngresos: Number(item.totalIngresos),
+      totalSalidas: Number(item.totalSalidas)
+    }));
   } catch (error) {
     console.error('Error en getTopSocios:', error);
     throw new Error('Error al obtener el top 3 de socios');

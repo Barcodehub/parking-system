@@ -6,8 +6,8 @@ export interface TopVehicle {
   export interface TopSocio {
     socioId: number;
     socioName: string;
-    vehicleCount: number;
-    exitCount: number;
+    totalIngresos: number;  // Suma de vehículos en parking + salidos
+    totalSalidas: number;   // Solo vehículos que ya salieron
   }
   
   export interface TopParking {

@@ -15,7 +15,10 @@ export const registerEntry = async (req: Request, res: Response) => {
 
 export const registerExit = async (req: Request, res: Response) => {
   const validatedData = vehicleEntrySchema.parse(req.body);
-  await vehicleService.registerExit(validatedData);
+  await vehicleService.registerExit({
+    ...validatedData,
+    socioId: (req as any).user.id // Ahora es válido
+  });
   res.status(200).json({ mensaje: 'Salida registrada exitosamente' });
 };
 
