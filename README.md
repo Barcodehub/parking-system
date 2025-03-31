@@ -164,69 +164,6 @@ Headers: Authorization: Bearer {token}
 Permisos: Cualquier usuario autenticado
 ```
 
-### Analitycs
-```http
-GET /analytics/vehicles/top-global
-Descripción: Top 10 vehículos más registrados en todos los parqueaderos
-Headers: Authorization: Bearer {token}
-Permisos: Admin/Socio
-```
-
-```http
-GET /analytics/socios/top
-Descripción: Top 3 socios con más ingresos esta semana
-Headers: Authorization: Bearer {token}
-Permisos: Admin
-```
-
-```http
-GET /analytics/parking/{parkingId}/earnings
-Descripción: Ganancias (hoy/semana/mes/año) de un parqueadero
-Headers: Authorization: Bearer {token}
-Permisos: Socio
-```
-
-```http
-GET /analytics/parking/{parkingId}/vehicles/top
-Descripción: Top 10 vehículos más registrados en un parqueadero específico
-Headers: Authorization: Bearer {token}
-Permisos: Admin/Socio
-```
-
-```http
-GET /analytics/parking/{parkingId}/vehicles/first-time
-Descripción: Vehículos registrados por primera vez en el parqueadero
-Headers: Authorization: Bearer {token}
-Permisos: Admin/Socio
-```
-
-```http
-GET /analytics/parkings/top
-Descripción: Top 3 parqueaderos con mayor ganancia semanal
-Headers: Authorization: Bearer {token}
-Permisos: Admin
-```
-
-
-### VEHÍCULOS
-
-```http
-POST /vehicles/entry
-Descripción: Registrar entrada de vehículo
-Headers: Authorization: Bearer {token}
-Body: {"placa": "ABC123", "parqueaderoId": 1}
-Permisos: Socio
-```
-
-```http
-POST /vehicles/exit
-Descripción: Registrar salida de vehículo
-Headers: Authorization: Bearer {token}
-Body: {"placa": "ABC123", "parqueaderoId": 1}
-Permisos: Socio
-```
-
-
 
 ### Parqueaderos
 
@@ -305,6 +242,66 @@ Headers: Authorization: Bearer {token}
 Permisos: Socio
 ```
 
+### VEHÍCULOS
+
+```http
+POST /vehicles/entry
+Descripción: Registrar entrada de vehículo
+Headers: Authorization: Bearer {token}
+Body: {"placa": "ABC123", "parqueaderoId": 1}
+Permisos: Socio
+```
+
+```http
+POST /vehicles/exit
+Descripción: Registrar salida de vehículo
+Headers: Authorization: Bearer {token}
+Body: {"placa": "ABC123", "parqueaderoId": 1}
+Permisos: Socio
+```
+
+### Analitycs
+```http
+GET /analytics/vehicles/top-global
+Descripción: Top 10 vehículos más registrados en todos los parqueaderos
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/socios/top
+Descripción: Top 3 socios con más ingresos esta semana
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
+
+```http
+GET /analytics/parking/{parkingId}/earnings
+Descripción: Ganancias (hoy/semana/mes/año) de un parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Socio
+```
+
+```http
+GET /analytics/parking/{parkingId}/vehicles/top
+Descripción: Top 10 vehículos más registrados en un parqueadero específico
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/parking/{parkingId}/vehicles/first-time
+Descripción: Vehículos registrados por primera vez en el parqueadero
+Headers: Authorization: Bearer {token}
+Permisos: Admin/Socio
+```
+
+```http
+GET /analytics/parkings/top
+Descripción: Top 3 parqueaderos con mayor ganancia semanal
+Headers: Authorization: Bearer {token}
+Permisos: Admin
+```
 
 ### EMAIL (SIMULACIÓN)
 
