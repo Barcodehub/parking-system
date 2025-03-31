@@ -5,12 +5,13 @@ import { Vehicle } from '@prisma/client';
 import { prisma } from '../app';
 import axios from 'axios';
 import { BadRequestError, NotFoundError } from '../errors/appError';
+import { EMAIL_SERVICE_URL } from '../config/env';
 
 const parkingService = new ParkingService();
 
 
 export class VehicleService {
-  private emailServiceUrl = 'http://localhost:3001/email/send';
+  private emailServiceUrl = EMAIL_SERVICE_URL ;
 
 
   
@@ -26,6 +27,13 @@ export class VehicleService {
       throw new BadRequestError('No se puede Registrar Ingreso, ya existe la placa en este u otro parqueadero');
     }
 
+    const parkingExists = await prisma.parking.findUnique({
+      where: { id: data.parqueaderoId },
+    });
+    
+    if (!parkingExists) {
+      throw new BadRequestError('El parqueadero no existe');
+    }
     // 3. Verificar capacidad del parqueadero
     try {
       await parkingService.validateParkingCapacity(data.parqueaderoId);
@@ -70,6 +78,15 @@ export class VehicleService {
     // 1. Validar formato de placa
     if (!repository.validatePlacaFormat(data.placa)) {
       throw new BadRequestError('Formato de placa inválido');
+    }
+
+    //1.1 si existe el parking
+    const parkingExists = await prisma.parking.findUnique({
+      where: { id: data.parqueaderoId },
+    });
+    
+    if (!parkingExists) {
+      throw new BadRequestError('El parqueadero no existe');
     }
 
     // 2. Verificar que el vehículo está activo en este parqueadero

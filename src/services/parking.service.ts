@@ -38,6 +38,22 @@ export class ParkingService {
 
   async updateParking(id: number, data: UpdateParkingDto): Promise<any> {
     await this.getParking(id); // Reutiliza la validación de existencia
+
+    if (data.socioId) { // Solo validar si se proporciona un nuevo socioId
+      const socio = await prisma.user.findUnique({ 
+          where: { id: data.socioId },
+          select: { role: true } 
+      });
+
+      if (!socio) {
+          throw new NotFoundError('Usuario no encontrado');
+      }
+
+      if (socio.role !== 'SOCIO') {
+          throw new BadRequestError('El ID proporcionado no pertenece a un socio válido');
+      }
+  }
+  
     return await repository.updateParking(id, data);
   }
 
