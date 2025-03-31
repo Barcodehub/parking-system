@@ -205,6 +205,7 @@ Body: {
   "socioId": 2
 }
 Permisos: Admin
+Asegurate de introducir un SocioID valido
 ```
 
 ```http
