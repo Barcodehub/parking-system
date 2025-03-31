@@ -1,0 +1,836 @@
+{
+	"info": {
+		"_postman_id": "ca8ba585-d524-4cb9-a0c5-4437c7016e5a",
+		"name": "prisma-express",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32173760"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"if (response.token) {  // Ajusta esto según el JSON devuelto por tu API\r",
+									"    pm.environment.set(\"authToken\", response.token);\r",
+									"    console.log(\"Token guardado en variables de entorno\");\r",
+									"} else {\r",
+									"    console.error(\"No se encontró un token en la respuesta\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@mail.com\",\r\n  \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Iniciar sesión\n\nSe guarda el token automaticamente, tener en cuenta para las funciones con permiso de socio o de admin"
+					},
+					"response": []
+				},
+				{
+					"name": "registrar_socio",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Juan Pérez\",\r\n  \"email\": \"juanperez@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/socio",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"socio"
+							]
+						},
+						"description": "Registrar un socio\n\nPermisos: (Admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset(\"authToken\");\r",
+									"console.log(\"Token eliminado de variables de entorno\");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Cerrar sesión\n\nSe borra el token, asegurarse de volver a iniciar sesión para probar funciones con permisos"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "parking",
+			"item": [
+				{
+					"name": "registrar_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Parqueadero parking\",\r\n  \"capacidad\": 100,\r\n  \"costoPorHora\": 2.5,\r\n  \"socioId\": 2  //Asegurate de introducir un SocioID valido\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/parkings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings"
+							]
+						},
+						"description": "Registrar un parqueadero\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "View_parking_id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"1"
+							]
+						},
+						"description": "Buscar parqueadero especifico por ID\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "View_all_parkins",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings"
+							]
+						},
+						"description": "Ver el listado de todos los parqueaderos\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit_parkins",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Parqueadero Centro3\",\r\n  \"capacidad\": 124,\r\n  \"costoPorHora\": 3,\r\n  \"socioId\": 3   //Asegurate de introducir un SocioID valido\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/parkings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"1"
+							]
+						},
+						"description": "Editar un parqueadero **parking_ID**\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"1"
+							]
+						},
+						"description": "Elima un parqueaddero por su **ID**\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Capacity_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/1/capacity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"1",
+								"capacity"
+							]
+						},
+						"description": "Capacidad de un parqueadero especifico\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vehicles",
+			"item": [
+				{
+					"name": "vehicle_entry",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"placa\": \"ABC138\",\r\n  \"parqueaderoId\": 1 //Asegurate de introducir un ParqueaderoID valido \r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/vehicles/entry",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicles",
+								"entry"
+							]
+						},
+						"description": "Registrar un vehiculo en un parqueadero\n\nPlaca 6 caracteres (sin ñ ni caracteres especiales)\n\nPermisos: (SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "vehicle_exit",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"placa\": \"ABC124\",\r\n  \"parqueaderoId\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/vehicles/exit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicles",
+								"exit"
+							]
+						},
+						"description": "Salida de vehiculos de un parqueadero\n\nPermisos: (SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "vehicles_parkingSocio",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/my-parkings/1/vehicles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"my-parkings",
+								"1",
+								"vehicles"
+							]
+						},
+						"description": "Puede ver listado/detalle de todos los vehículos en un parqueadero especifico que le pertenezca\n\n**ParkingID**  \nPermisos: SOCIO"
+					},
+					"response": []
+				},
+				{
+					"name": "GEt_vehicles_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/1/vehicles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"1",
+								"vehicles"
+							]
+						},
+						"description": "Puede revisar listado/detalle de vehículos en un parqueadero en especifico\n\nparkings/**ParkingID**/vehicles\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "parking_socio",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/parkings/my-parkings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"parkings",
+								"my-parkings"
+							]
+						},
+						"description": "Puede ver listado de los parqueaderos que tiene asociados\n\nPermisos: (SOCIO)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analitics",
+			"item": [
+				{
+					"name": "analitycs_top10_global",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/vehicles/top-global",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"vehicles",
+								"top-global"
+							]
+						},
+						"description": "Top 10 vehículos que más veces se han registrado en los diferentes parqueaderos y cuantas veces han sido\n\nPermisos: (ADMIN || SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "analitycs_socios_top3_week",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/socios/top",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"socios",
+								"top"
+							]
+						},
+						"description": "Top 3 de los socios con más ingresos de vehículos en la semana actual y muestra la cantidad de salidas de vehículos\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "analitycs_earnings_fortime_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/parking/1/earnings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"parking",
+								"1",
+								"earnings"
+							]
+						},
+						"description": "obtener las ganancias de hoy, esta semana, este mes, este año de un parqueadero en especifico\n\nanalytics/parking/:**parkingId**/earnings\n\nPermisos: (SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "analitycs_vehicles_top10_parking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/parking/1/vehicles/top",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"parking",
+								"1",
+								"vehicles",
+								"top"
+							]
+						},
+						"description": "Top 10 vehículos que más veces se han registrado en un  \nparqueadero y cuantas veces han sido\n\nGET /analytics/parking/:**parkingId**/vehicles/top\n\nPermisos: (ADMIN || SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "analitycs_parking_first_time",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/parking/1/vehicles/first-time",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"parking",
+								"1",
+								"vehicles",
+								"first-time"
+							]
+						},
+						"description": "Vehículos parqueados cuales son por primera vez en  \nese parqueadero\n\nGET /analytics/parking/:**parkingId**/vehicles/first-time\n\nPermisos: (ADMIN || SOCIO)"
+					},
+					"response": []
+				},
+				{
+					"name": "analitycs_parking_top3_week",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/parkings/top",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"parkings",
+								"top"
+							]
+						},
+						"description": "Top 3 de los parqueaderos con mayor ganancia en la semana\n\nPermisos: (ADMIN)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "email_simulacion",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@mail.com\",\r\n  \"placa\": \"BCA999\",\r\n  \"mensaje\": \"Nuevo ingreso\",\r\n  \"parqueaderoId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/email/send",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"email",
+						"send"
+					]
+				},
+				"description": "Simular email directamente"
+			},
+			"response": []
+		}
+	]
+}

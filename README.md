@@ -4,22 +4,22 @@
 1. [Descripción](#descripción)
 2. [Características principales](#características-principales)
 3. [Roles y Permisos](#roles-y-permisos)
-   - [Admin](#admin-puede)
-   - [Socio](#socio-puede)
+   - Admin
+   - Socio
 4. [Instalación](#instalación)
-   - [Requisitos previos](#1-requisitos-previos:)
-   - [Configuración inicial](#2-configuración-inicial)
-   - [Configuración de entorno](#3-configuración-de-entorno)
-   - [Base de datos](#5-base-de-datos)
-   - [Ejecución](#6-run)
-   - [Microservicio Email](#7-run-microservice-api-email)
+   - Requisitos previos
+   - Configuración inicial
+   - Configuración de entorno
+   - Base de datos
+   - Ejecución
+   - Microservicio Email
 5. [Estructura de directorios](#estructura-de-directorios)
 6. [Endpoints del Sistema](#endpoints-del-sistema)
-   - [Autenticación](#AUTHENTICACIÓN)
-   - [Analíticas](#Analitycs)
-   - [Vehículos](#vehículos)
-   - [Parqueaderos](#parqueaderos)
-   - [Email (Simulación)](#email-simulación)
+   - Autenticación
+   - Analíticas
+   - Vehículos
+   - Parqueaderos
+   - Email (Simulación)
 
 
 ## Descripción:
@@ -141,6 +141,8 @@ API para gestión de parqueaderos con autenticación de usuarios, registro de ve
   ```
 
 ## ENDPOINTS DEL SISTEMA
+
+Descarga la colección desde [postman_collection.json](postman/prisma-express.postman_collection.json).
 
 ### AUTHENTICACIÓN
 
